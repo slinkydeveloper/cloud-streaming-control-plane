@@ -18,7 +18,7 @@ metadata:
   name: controller
   namespace: knative-streaming
   labels:
-    samples.knative.dev/release: devel
+    streaming.knative.dev/release: devel
 spec:
   replicas: 1
   selector:
@@ -30,7 +30,7 @@ spec:
         sidecar.istio.io/inject: "false"
       labels:
         app: controller
-        samples.knative.dev/release: devel
+        streaming.knative.dev/release: devel
     spec:
       serviceAccountName: controller
       containers:
@@ -63,7 +63,7 @@ spec:
         - name: CONFIG_OBSERVABILITY_NAME
           value: config-observability
         - name: METRICS_DOMAIN
-          value: knative.dev/samples
+          value: knative.dev/streaming
       volumes:
         - name: config-logging
           configMap:

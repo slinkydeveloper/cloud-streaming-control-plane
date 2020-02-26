@@ -17,7 +17,7 @@ kind: MutatingWebhookConfiguration
 metadata:
   name: defaulting.webhook.knative-streaming.knative.dev
   labels:
-    samples.knative.dev/release: devel
+    streaming.knative.dev/release: devel
 webhooks:
 - admissionReviewVersions:
   - v1beta1
@@ -33,7 +33,7 @@ kind: ValidatingWebhookConfiguration
 metadata:
   name: validation.webhook.knative-streaming.knative.dev
   labels:
-    samples.knative.dev/release: devel
+    streaming.knative.dev/release: devel
 webhooks:
 - admissionReviewVersions:
   - v1beta1
@@ -61,7 +61,7 @@ webhooks:
   name: config.webhook.knative-streaming.knative.dev
   namespaceSelector:
     matchExpressions:
-    - key: samples.knative.dev/release
+    - key: streaming.knative.dev/release
       operator: Exists
 ---
 apiVersion: v1
@@ -70,5 +70,5 @@ metadata:
   name: webhook-certs
   namespace: knative-streaming
   labels:
-    samples.knative.dev/release: devel
+    streaming.knative.dev/release: devel
 # The data is populated at install time.

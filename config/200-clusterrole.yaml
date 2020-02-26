@@ -3,11 +3,11 @@ apiVersion: rbac.authorization.k8s.io/v1
 metadata:
   name: knative-streaming-admin
   labels:
-    samples.knative.dev/release: devel
+    streaming.knative.dev/release: devel
 aggregationRule:
   clusterRoleSelectors:
   - matchLabels:
-      samples.knative.dev/controller: "true"
+      streaming.knative.dev/controller: "true"
 rules: [] # Rules are automatically filled in by the controller manager.
 ---
 kind: ClusterRole
@@ -15,8 +15,8 @@ apiVersion: rbac.authorization.k8s.io/v1
 metadata:
   name: knative-streaming-core
   labels:
-    samples.knative.dev/release: devel
-    samples.knative.dev/controller: "true"
+    streaming.knative.dev/release: devel
+    streaming.knative.dev/controller: "true"
 rules:
   - apiGroups: [""]
     resources: ["configmaps", "services", "secrets", "events"]
@@ -30,6 +30,6 @@ rules:
   - apiGroups: ["apiextensions.k8s.io"]
     resources: ["customresourcedefinitions"]
     verbs: ["get", "list", "create", "update", "delete", "patch", "watch"]
-  - apiGroups: ["samples.knative.dev"]
+  - apiGroups: ["streaming.knative.dev"]
     resources: ["*"]
     verbs: ["get", "list", "create", "update", "delete", "deletecollection", "patch", "watch"]

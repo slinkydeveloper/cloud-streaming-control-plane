@@ -18,7 +18,7 @@ metadata:
   name: webhook
   namespace: knative-streaming
   labels:
-    samples.knative.dev/release: devel
+    streaming.knative.dev/release: devel
 spec:
   replicas: 1
   selector:
@@ -32,7 +32,7 @@ spec:
       labels:
         app: webhook
         role: webhook
-        samples.knative.dev/release: devel
+        streaming.knative.dev/release: devel
     spec:
       serviceAccountName: controller
       containers:
@@ -57,6 +57,6 @@ spec:
         - name: CONFIG_LOGGING_NAME
           value: config-logging
         - name: METRICS_DOMAIN
-          value: knative.dev/samples
+          value: knative.dev/streaming
         - name: WEBHOOK_NAME
           value: webhook

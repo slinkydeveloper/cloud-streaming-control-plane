@@ -17,4 +17,4 @@ kind: Namespace
 metadata:
   name: knative-streaming
   labels:
-    samples.knative.dev/release: devel
+    streaming.knative.dev/release: devel

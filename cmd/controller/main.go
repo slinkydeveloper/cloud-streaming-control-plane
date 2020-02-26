@@ -17,8 +17,9 @@ limitations under the License.
 package main
 
 import (
-	// The set of controllers this controller process runs.
-	"knative.dev/streaming/pkg/reconciler/addressableservice"
+	"knative.dev/streaming/pkg/reconciler/inbound"
+	"knative.dev/streaming/pkg/reconciler/stream"
+	"knative.dev/streaming/pkg/reconciler/streamprocessor"
 
 	// This defines the shared main for injected controllers.
 	"knative.dev/pkg/injection/sharedmain"
@@ -26,6 +27,8 @@ import (
 
 func main() {
 	sharedmain.Main("controller",
-		addressableservice.NewController,
+		inbound.NewController,
+		stream.NewController,
+		streamprocessor.NewController,
 	)
 }

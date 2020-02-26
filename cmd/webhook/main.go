@@ -41,6 +41,8 @@ import (
 var types = map[schema.GroupVersionKind]resourcesemantics.GenericCRD{
 	// List the types to validate.
 	v1alpha1.SchemeGroupVersion.WithKind("StreamProcessor"): &v1alpha1.StreamProcessor{},
+	v1alpha1.SchemeGroupVersion.WithKind("Stream"):          &v1alpha1.Stream{},
+	v1alpha1.SchemeGroupVersion.WithKind("Inbound"):         &v1alpha1.Inbound{},
 }
 
 func NewDefaultingAdmissionController(ctx context.Context, cmw configmap.Watcher) *controller.Impl {

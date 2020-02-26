@@ -17,7 +17,7 @@ kind: ClusterRoleBinding
 metadata:
   name: knative-streaming-controller-admin
   labels:
-    samples.knative.dev/release: devel
+    streaming.knative.dev/release: devel
 subjects:
   - kind: ServiceAccount
     name: controller

@@ -17,7 +17,7 @@ kind: CustomResourceDefinition
 metadata:
   name: inbounds.streaming.knative.dev
   labels:
-    samples.knative.dev/release: devel
+    streaming.knative.dev/release: devel
     knative.dev/crd-install: "true"
 spec:
   group: streaming.knative.dev

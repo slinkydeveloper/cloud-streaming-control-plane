@@ -21,24 +21,40 @@ import (
 	"knative.dev/pkg/apis"
 )
 
-var streamCondSet = apis.NewLivingConditionSet()
+var streamCondSet = apis.NewLivingConditionSet(
+	StreamConditionReady,
+	StreamConditionConfigReady,
+)
+
+const (
+	// StreamConditionReady is set when the revision is starting to materialize
+	// runtime resources, and becomes true when those resources are ready.
+	StreamConditionReady = apis.ConditionReady
+
+	StreamConditionConfigReady apis.ConditionType = "ConfigurationReady"
+)
 
 // GetGroupVersionKind implements kmeta.OwnerRefable
 func (is *Stream) GetGroupVersionKind() schema.GroupVersionKind {
 	return SchemeGroupVersion.WithKind("Stream")
 }
 
-func (ass *StreamStatus) InitializeConditions() {
-	streamCondSet.Manage(ass).InitializeConditions()
+func (streamStatus *StreamStatus) InitializeConditions() {
+	streamCondSet.Manage(streamStatus).InitializeConditions()
 }
 
-func (ass *StreamStatus) MarkServiceUnavailable(name string) {
-	streamCondSet.Manage(ass).MarkFalse(
-		StreamConditionReady,
-		"ServiceUnavailable",
-		"Service %q wasn't found.", name)
+func (streamStatus *StreamStatus) MarkNotReady(reason, messageFormat string, messageA ...interface{}) {
+	streamCondSet.Manage(streamStatus).MarkFalse(StreamConditionReady, reason, messageFormat, messageA...)
 }
 
-func (ass *StreamStatus) MarkServiceAvailable() {
-	streamCondSet.Manage(ass).MarkTrue(StreamConditionReady)
+func (streamStatus *StreamStatus) MarkReady() {
+	streamCondSet.Manage(streamStatus).MarkTrue(StreamConditionReady)
+}
+
+func (streamStatus *StreamStatus) MarkConfigTrue() {
+	streamCondSet.Manage(streamStatus).MarkTrue(StreamConditionConfigReady)
+}
+
+func (streamStatus *StreamStatus) MarkConfigFailed(reason, messageFormat string, messageA ...interface{}) {
+	streamCondSet.Manage(streamStatus).MarkFalse(StreamConditionConfigReady, reason, messageFormat, messageA...)
 }

@@ -39,16 +39,12 @@ func NewController(
 
 	streamInformer := stream.Get(ctx)
 
-	// TODO: setup additional informers here.
-
 	r := &Reconciler{}
 	impl := v1alpha1stream.NewImpl(ctx, r)
 
 	logger.Info("Setting up event handlers.")
 
 	streamInformer.Informer().AddEventHandler(controller.HandleAll(impl.Enqueue))
-
-	// TODO: add additional informer event handlers here.
 
 	return impl
 }

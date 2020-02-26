@@ -49,12 +49,6 @@ var _ kmeta.OwnerRefable = (*Stream)(nil)
 // ProcessorStreamSpec holds the desired state of the Stream (from the client).
 type StreamSpec struct{}
 
-const (
-	// StreamConditionReady is set when the revision is starting to materialize
-	// runtime resources, and becomes true when those resources are ready.
-	StreamConditionReady = apis.ConditionReady
-)
-
 // StreamStatus communicates the observed state of the Stream (from the controller).
 type StreamStatus struct {
 	duckv1.Status `json:",inline"`

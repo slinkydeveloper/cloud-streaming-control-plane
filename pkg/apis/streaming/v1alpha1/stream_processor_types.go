@@ -48,15 +48,15 @@ var _ kmeta.OwnerRefable = (*StreamProcessor)(nil)
 
 // StreamProcessorSpec holds the desired state of the StreamProcessor (from the client).
 type StreamProcessorSpec struct {
-	Container corev1.Container `json:"container"`
-	Input     []StreamSpec     `json:"input"`
-	Output    []StreamSpec     `json:"input"`
+	Container corev1.Container      `json:"container"`
+	Input     []ProcessorStreamSpec `json:"input"`
+	Output    []ProcessorStreamSpec `json:"input"`
 
 	// +optional
-	State *StreamSpec `json:"state,omitempty"`
+	State *ProcessorStreamSpec `json:"state,omitempty"`
 }
 
-type StreamSpec struct {
+type ProcessorStreamSpec struct {
 	Name          string `json:"name"`
 	ParameterName string `json:"parameterName"`
 	Key           string `json:"key"`

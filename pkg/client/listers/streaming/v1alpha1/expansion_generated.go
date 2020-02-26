@@ -26,6 +26,14 @@ type InboundListerExpansion interface{}
 // InboundNamespaceLister.
 type InboundNamespaceListerExpansion interface{}
 
+// StreamListerExpansion allows custom methods to be added to
+// StreamLister.
+type StreamListerExpansion interface{}
+
+// StreamNamespaceListerExpansion allows custom methods to be added to
+// StreamNamespaceLister.
+type StreamNamespaceListerExpansion interface{}
+
 // StreamProcessorListerExpansion allows custom methods to be added to
 // StreamProcessorLister.
 type StreamProcessorListerExpansion interface{}

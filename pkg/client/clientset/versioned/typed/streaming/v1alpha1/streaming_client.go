@@ -27,6 +27,7 @@ import (
 type StreamingV1alpha1Interface interface {
 	RESTClient() rest.Interface
 	InboundsGetter
+	StreamsGetter
 	StreamProcessorsGetter
 }
 
@@ -37,6 +38,10 @@ type StreamingV1alpha1Client struct {
 
 func (c *StreamingV1alpha1Client) Inbounds(namespace string) InboundInterface {
 	return newInbounds(c, namespace)
+}
+
+func (c *StreamingV1alpha1Client) Streams(namespace string) StreamInterface {
+	return newStreams(c, namespace)
 }
 
 func (c *StreamingV1alpha1Client) StreamProcessors(namespace string) StreamProcessorInterface {

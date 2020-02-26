@@ -32,6 +32,10 @@ func (c *FakeStreamingV1alpha1) Inbounds(namespace string) v1alpha1.InboundInter
 	return &FakeInbounds{c, namespace}
 }
 
+func (c *FakeStreamingV1alpha1) Streams(namespace string) v1alpha1.StreamInterface {
+	return &FakeStreams{c, namespace}
+}
+
 func (c *FakeStreamingV1alpha1) StreamProcessors(namespace string) v1alpha1.StreamProcessorInterface {
 	return &FakeStreamProcessors{c, namespace}
 }

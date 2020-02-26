@@ -26,6 +26,8 @@ import (
 type Interface interface {
 	// Inbounds returns a InboundInformer.
 	Inbounds() InboundInformer
+	// Streams returns a StreamInformer.
+	Streams() StreamInformer
 	// StreamProcessors returns a StreamProcessorInformer.
 	StreamProcessors() StreamProcessorInformer
 }
@@ -44,6 +46,11 @@ func New(f internalinterfaces.SharedInformerFactory, namespace string, tweakList
 // Inbounds returns a InboundInformer.
 func (v *version) Inbounds() InboundInformer {
 	return &inboundInformer{factory: v.factory, namespace: v.namespace, tweakListOptions: v.tweakListOptions}
+}
+
+// Streams returns a StreamInformer.
+func (v *version) Streams() StreamInformer {
+	return &streamInformer{factory: v.factory, namespace: v.namespace, tweakListOptions: v.tweakListOptions}
 }
 
 // StreamProcessors returns a StreamProcessorInformer.

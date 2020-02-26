@@ -55,6 +55,8 @@ func (f *sharedInformerFactory) ForResource(resource schema.GroupVersionResource
 	// Group=streaming.knative.dev, Version=v1alpha1
 	case v1alpha1.SchemeGroupVersion.WithResource("inbounds"):
 		return &genericInformer{resource: resource.GroupResource(), informer: f.Streaming().V1alpha1().Inbounds().Informer()}, nil
+	case v1alpha1.SchemeGroupVersion.WithResource("streams"):
+		return &genericInformer{resource: resource.GroupResource(), informer: f.Streaming().V1alpha1().Streams().Informer()}, nil
 	case v1alpha1.SchemeGroupVersion.WithResource("streamprocessors"):
 		return &genericInformer{resource: resource.GroupResource(), informer: f.Streaming().V1alpha1().StreamProcessors().Informer()}, nil
 

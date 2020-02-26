@@ -21,24 +21,24 @@ import (
 	"knative.dev/pkg/apis"
 )
 
-var inboundCondSet = apis.NewLivingConditionSet()
+var streamCondSet = apis.NewLivingConditionSet()
 
 // GetGroupVersionKind implements kmeta.OwnerRefable
-func (is *Inbound) GetGroupVersionKind() schema.GroupVersionKind {
-	return SchemeGroupVersion.WithKind("Inbound")
+func (is *Stream) GetGroupVersionKind() schema.GroupVersionKind {
+	return SchemeGroupVersion.WithKind("Stream")
 }
 
-func (ass *InboundStatus) InitializeConditions() {
-	inboundCondSet.Manage(ass).InitializeConditions()
+func (ass *StreamStatus) InitializeConditions() {
+	streamCondSet.Manage(ass).InitializeConditions()
 }
 
-func (ass *InboundStatus) MarkServiceUnavailable(name string) {
-	inboundCondSet.Manage(ass).MarkFalse(
-		InboundConditionReady,
+func (ass *StreamStatus) MarkServiceUnavailable(name string) {
+	streamCondSet.Manage(ass).MarkFalse(
+		StreamConditionReady,
 		"ServiceUnavailable",
 		"Service %q wasn't found.", name)
 }
 
-func (ass *InboundStatus) MarkServiceAvailable() {
-	inboundCondSet.Manage(ass).MarkTrue(InboundConditionReady)
+func (ass *StreamStatus) MarkServiceAvailable() {
+	streamCondSet.Manage(ass).MarkTrue(StreamConditionReady)
 }

@@ -2,18 +2,13 @@
 
 
 [[projects]]
-  digest = "1:a0c6f9487d58c98483e8785cc45e181c3cb7a21549f9f32c2e80fedb7141db18"
+  digest = "1:5f43842d8fe08b43ada82d57e48a844800b4163d1150f7f451e81cb347fccb72"
   name = "cloud.google.com/go"
   packages = [
     "compute/metadata",
     "container/apiv1",
-    "iam",
-    "internal",
-    "internal/optional",
-    "internal/trace",
     "internal/version",
     "monitoring/apiv3",
-    "storage",
     "trace/apiv2",
   ]
   pruneopts = "NUT"
@@ -1282,6 +1277,14 @@
 
 [[projects]]
   branch = "master"
+  digest = "1:baac3087ab44fff93bf827fac9f2e206ed18f8108b724b55e042efc7c2deb00f"
+  name = "knative.dev/eventing"
+  packages = ["pkg/apis/configs/validation"]
+  pruneopts = "NUT"
+  revision = "598d52ae448e25c0174cd74cd2b4d3a7f0e983f8"
+
+[[projects]]
+  branch = "master"
   digest = "1:1829518da17f4803e337ca56334ef7c887a9677f28081f7176bf15e2d3bb64d1"
   name = "knative.dev/pkg"
   packages = [
@@ -1385,6 +1388,7 @@
     "k8s.io/code-generator/cmd/defaulter-gen",
     "k8s.io/code-generator/cmd/informer-gen",
     "k8s.io/code-generator/cmd/lister-gen",
+    "knative.dev/eventing/pkg/apis/configs/validation",
     "knative.dev/pkg/apis",
     "knative.dev/pkg/apis/duck/v1",
     "knative.dev/pkg/client/injection/kube/client",
@@ -1396,6 +1400,7 @@
     "knative.dev/pkg/injection",
     "knative.dev/pkg/injection/sharedmain",
     "knative.dev/pkg/kmeta",
+    "knative.dev/pkg/leaderelection",
     "knative.dev/pkg/logging",
     "knative.dev/pkg/metrics",
     "knative.dev/pkg/network",

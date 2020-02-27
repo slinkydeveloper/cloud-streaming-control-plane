@@ -24,6 +24,7 @@ import (
 	"knative.dev/pkg/configmap"
 	"knative.dev/pkg/controller"
 	"knative.dev/pkg/injection/sharedmain"
+	"knative.dev/pkg/leaderelection"
 	"knative.dev/pkg/logging"
 	"knative.dev/pkg/metrics"
 	"knative.dev/pkg/signals"
@@ -34,6 +35,8 @@ import (
 	"knative.dev/pkg/webhook/resourcesemantics"
 	"knative.dev/pkg/webhook/resourcesemantics/defaulting"
 	"knative.dev/pkg/webhook/resourcesemantics/validation"
+
+	configvalidation "knative.dev/eventing/pkg/apis/configs/validation"
 
 	"knative.dev/streaming/pkg/apis/streaming/v1alpha1"
 )
@@ -104,8 +107,9 @@ func NewConfigValidationController(ctx context.Context, cmw configmap.Watcher) *
 
 		// The configmaps to validate.
 		configmap.Constructors{
-			logging.ConfigMapName(): logging.NewConfigFromConfigMap,
-			metrics.ConfigMapName(): metrics.NewObservabilityConfigFromConfigMap,
+			logging.ConfigMapName():        logging.NewConfigFromConfigMap,
+			metrics.ConfigMapName():        metrics.NewObservabilityConfigFromConfigMap,
+			leaderelection.ConfigMapName(): configvalidation.ValidateLeaderElectionConfig,
 		},
 	)
 }

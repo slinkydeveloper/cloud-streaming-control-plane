@@ -51,7 +51,7 @@ type StreamProcessorSpec struct {
 	Container corev1.Container `json:"container"`
 
 	Input  []StreamBindingSpec `json:"input"`
-	Output []StreamBindingSpec `json:"input"`
+	Output []StreamBindingSpec `json:"output"`
 	// +optional
 	State *StreamBindingSpec `json:"state,omitempty"`
 }

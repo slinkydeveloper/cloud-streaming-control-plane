@@ -90,7 +90,7 @@ func (r *Reconciler) createTopic(ctx context.Context, stream *v1alpha1.Stream, k
 	logger := logging.FromContext(ctx)
 
 	topicName := kafka.TopicName(stream)
-	logger.Info("Creating topic on Kafka cluster", zap.String("topic", topicName))
+	logger.Infof("Creating topic on Kafka cluster: %s", topicName)
 	err := kafkaClusterAdmin.CreateTopic(topicName, &sarama.TopicDetail{
 		ReplicationFactor: 1,
 		NumPartitions:     10,
@@ -109,7 +109,7 @@ func (r *Reconciler) deleteTopic(ctx context.Context, stream *v1alpha1.Stream, k
 	logger := logging.FromContext(ctx)
 
 	topicName := kafka.TopicName(stream)
-	logger.Info("Deleting topic on Kafka Cluster", zap.String("topic", topicName))
+	logger.Infof("Deleting topic on Kafka Cluster: %s", topicName)
 	err := kafkaClusterAdmin.DeleteTopic(topicName)
 	if err == sarama.ErrUnknownTopicOrPartition {
 		return nil

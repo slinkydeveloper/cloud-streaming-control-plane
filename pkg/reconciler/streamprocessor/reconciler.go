@@ -229,19 +229,27 @@ func generateEnvs(streamProcessor *v1alpha1.StreamProcessor) []corev1.EnvVar {
 
 func createDeployment(streamProcessor *v1alpha1.StreamProcessor) *appsv1.Deployment {
 	name := deploymentName(streamProcessor)
+	labels := map[string]string{
+		"stream-processor": streamProcessor.Name,
+	}
 	replicas := int32(1)
 
 	return &appsv1.Deployment{
 		ObjectMeta: metav1.ObjectMeta{
 			Name:      name,
 			Namespace: streamProcessor.Namespace,
+			Labels:    labels,
 			OwnerReferences: []metav1.OwnerReference{
 				*kmeta.NewControllerRef(streamProcessor),
 			},
 		},
 		Spec: appsv1.DeploymentSpec{
 			Replicas: &replicas,
+			Selector: &metav1.LabelSelector{MatchLabels: labels},
 			Template: corev1.PodTemplateSpec{
+				ObjectMeta: metav1.ObjectMeta{
+					Labels: labels,
+				},
 				Spec: corev1.PodSpec{
 					Containers: []corev1.Container{
 						{

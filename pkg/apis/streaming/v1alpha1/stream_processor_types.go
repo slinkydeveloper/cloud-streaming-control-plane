@@ -57,16 +57,12 @@ type StreamProcessorSpec struct {
 }
 
 type StreamBindingSpec struct {
-	Name          string `json:"name"`
-	ParameterName string `json:"parameterName"`
-	Key           string `json:"key"`
+	Name string `json:"name"`
+	// +optional
+	ParameterName string `json:"parameterName,omitempty"`
+	// +optional
+	Key string `json:"key,omitempty"`
 }
-
-const (
-	// StreamProcessorConditionReady is set when the revision is starting to materialize
-	// runtime resources, and becomes true when those resources are ready.
-	StreamProcessorConditionReady = apis.ConditionReady
-)
 
 // StreamProcessorStatus communicates the observed state of the StreamProcessor (from the controller).
 type StreamProcessorStatus struct {

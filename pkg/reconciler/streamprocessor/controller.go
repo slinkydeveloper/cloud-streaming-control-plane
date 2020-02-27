@@ -26,7 +26,8 @@ import (
 	controller "knative.dev/pkg/controller"
 	logging "knative.dev/pkg/logging"
 
-	streamprocessor "knative.dev/streaming/pkg/client/injection/informers/streaming/v1alpha1/streamprocessor"
+	"knative.dev/streaming/pkg/client/injection/informers/streaming/v1alpha1/stream"
+	"knative.dev/streaming/pkg/client/injection/informers/streaming/v1alpha1/streamprocessor"
 	v1alpha1streamprocessor "knative.dev/streaming/pkg/client/injection/reconciler/streaming/v1alpha1/streamprocessor"
 )
 
@@ -40,11 +41,13 @@ func NewController(
 	streamprocessorInformer := streamprocessor.Get(ctx)
 	deploymentInformer := deployment.Get(ctx)
 	svcInformer := service.Get(ctx)
+	streamsInformer := stream.Get(ctx)
 	kubeClient := kubeclient.Get(ctx)
 
 	r := &Reconciler{
 		deploymentInformer: deploymentInformer,
 		svcInformer:        svcInformer,
+		streamsInformer:    streamsInformer,
 		kubeClient:         kubeClient,
 	}
 	impl := v1alpha1streamprocessor.NewImpl(ctx, r)

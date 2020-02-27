@@ -21,7 +21,18 @@ import (
 	"knative.dev/pkg/apis"
 )
 
-var streamProcessorCondSet = apis.NewLivingConditionSet()
+const (
+	// StreamProcessorConditionReady is set when the revision is starting to materialize
+	// runtime resources, and becomes true when those resources are ready.
+	StreamProcessorConditionReady = apis.ConditionReady
+
+	StreamProcessorConditionStreamsReady apis.ConditionType = "StreamProcessorConditionStreamsReady"
+)
+
+var streamProcessorCondSet = apis.NewLivingConditionSet(
+	StreamConditionConfigReady,
+	StreamProcessorConditionStreamsReady,
+)
 
 // GetGroupVersionKind implements kmeta.OwnerRefable
 func (as *StreamProcessor) GetGroupVersionKind() schema.GroupVersionKind {
@@ -30,6 +41,17 @@ func (as *StreamProcessor) GetGroupVersionKind() schema.GroupVersionKind {
 
 func (ass *StreamProcessorStatus) InitializeConditions() {
 	streamProcessorCondSet.Manage(ass).InitializeConditions()
+}
+
+func (ass *StreamProcessorStatus) MarkStreamNotFound(name string) {
+	streamProcessorCondSet.Manage(ass).MarkFalse(
+		StreamProcessorConditionStreamsReady,
+		"StreamNotFound",
+		"Stream %s not found: please create it and then reapply this resource", name)
+}
+
+func (ass *StreamProcessorStatus) MarkStreamsReady() {
+	streamProcessorCondSet.Manage(ass).MarkTrue(StreamProcessorConditionStreamsReady)
 }
 
 func (ass *StreamProcessorStatus) MarkDeploymentFailed(name string, err error) {

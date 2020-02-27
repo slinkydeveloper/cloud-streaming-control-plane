@@ -21,7 +21,18 @@ import (
 	"knative.dev/pkg/apis"
 )
 
-var inboundCondSet = apis.NewLivingConditionSet()
+var inboundCondSet = apis.NewLivingConditionSet(
+	InboundConditionReady,
+	InboundConditionStreamReady,
+)
+
+const (
+	// InboundConditionReady is set when the revision is starting to materialize
+	// runtime resources, and becomes true when those resources are ready.
+	InboundConditionReady = apis.ConditionReady
+
+	InboundConditionStreamReady apis.ConditionType = "InboundConditionStreamReady"
+)
 
 // GetGroupVersionKind implements kmeta.OwnerRefable
 func (is *Inbound) GetGroupVersionKind() schema.GroupVersionKind {
@@ -30,6 +41,17 @@ func (is *Inbound) GetGroupVersionKind() schema.GroupVersionKind {
 
 func (ass *InboundStatus) InitializeConditions() {
 	inboundCondSet.Manage(ass).InitializeConditions()
+}
+
+func (ass *InboundStatus) MarkStreamNotFound(name string) {
+	inboundCondSet.Manage(ass).MarkFalse(
+		InboundConditionStreamReady,
+		"StreamNotFound",
+		"Stream %s not found: please create it and then reapply this resource", name)
+}
+
+func (ass *InboundStatus) MarkStreamReady() {
+	inboundCondSet.Manage(ass).MarkTrue(InboundConditionStreamReady)
 }
 
 func (ass *InboundStatus) MarkServiceFailed(name string, err error) {

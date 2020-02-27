@@ -52,12 +52,6 @@ type InboundSpec struct {
 	Key        string `json:"key,omitempty"`
 }
 
-const (
-	// InboundConditionReady is set when the revision is starting to materialize
-	// runtime resources, and becomes true when those resources are ready.
-	InboundConditionReady = apis.ConditionReady
-)
-
 // InboundStatus communicates the observed state of the Inbound (from the controller).
 type InboundStatus struct {
 	duckv1.Status `json:",inline"`

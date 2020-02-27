@@ -38,6 +38,7 @@ import (
 	reconciler "knative.dev/pkg/reconciler"
 
 	v1alpha1 "knative.dev/streaming/pkg/apis/streaming/v1alpha1"
+	streamingv1alpha1informers "knative.dev/streaming/pkg/client/informers/externalversions/streaming/v1alpha1"
 	inbound "knative.dev/streaming/pkg/client/injection/reconciler/streaming/v1alpha1/inbound"
 	"knative.dev/streaming/pkg/kafka"
 )
@@ -56,6 +57,7 @@ func newReconciledNormal(namespace, name string) reconciler.Event {
 type Reconciler struct {
 	svcInformer        corev1informers.ServiceInformer
 	deploymentInformer appsv1informers.DeploymentInformer
+	streamsInformer    streamingv1alpha1informers.StreamInformer
 	kubeClient         kubernetes.Interface
 }
 
@@ -67,17 +69,26 @@ func (r *Reconciler) ReconcileKind(ctx context.Context, inbound *v1alpha1.Inboun
 	logger := logging.FromContext(ctx)
 	inbound.Status.InitializeConditions()
 
-	deployment, err := r.reconcileDeployment(ctx, createDeployment(inbound))
+	_, err := r.streamsInformer.Lister().Streams(inbound.Namespace).Get(inbound.Spec.StreamName)
+	if err != nil && apierrs.IsNotFound(err) {
+		logger.Errorf("Stream %s not found", inbound.Spec.StreamName)
+		inbound.Status.MarkStreamNotFound(inbound.Spec.StreamName)
+		return err
+	}
+
+	inbound.Status.MarkStreamReady()
+
+	_, err = r.reconcileDeployment(ctx, createDeployment(inbound))
 	if err != nil {
 		logger.Error("Error while reconciling the deployment", zap.Error(err))
-		inbound.Status.MarkDeploymentFailed(deployment.Name, err)
+		inbound.Status.MarkDeploymentFailed(deploymentName(inbound), err)
 		return err
 	}
 
 	svc, err := r.reconcileSvc(ctx, createService(inbound))
 	if err != nil {
 		logger.Error("Error while reconciling the service", zap.Error(err))
-		inbound.Status.MarkServiceFailed(svc.Name, err)
+		inbound.Status.MarkServiceFailed(svcName(inbound), err)
 		return err
 	}
 
@@ -186,7 +197,8 @@ func createDeployment(inbound *v1alpha1.Inbound) *appsv1.Deployment {
 
 	return &appsv1.Deployment{
 		ObjectMeta: metav1.ObjectMeta{
-			Name: name,
+			Name:      name,
+			Namespace: inbound.Namespace,
 			OwnerReferences: []metav1.OwnerReference{
 				*kmeta.NewControllerRef(inbound),
 			},
@@ -207,7 +219,6 @@ func createDeployment(inbound *v1alpha1.Inbound) *appsv1.Deployment {
 							ContainerPort: 8080,
 						}},
 					}},
-					RestartPolicy: corev1.RestartPolicyNever,
 				},
 			},
 		},
@@ -220,8 +231,9 @@ func createService(inbound *v1alpha1.Inbound) *corev1.Service {
 
 	return &corev1.Service{
 		ObjectMeta: metav1.ObjectMeta{
-			Name:   name,
-			Labels: selector,
+			Name:      name,
+			Namespace: inbound.Namespace,
+			Labels:    selector,
 			OwnerReferences: []metav1.OwnerReference{
 				*kmeta.NewControllerRef(inbound),
 			},

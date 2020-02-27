@@ -30,9 +30,11 @@ import (
 	corev1informers "k8s.io/client-go/informers/core/v1"
 	"k8s.io/client-go/kubernetes"
 	"knative.dev/pkg/kmeta"
+	"knative.dev/pkg/logging"
 	reconciler "knative.dev/pkg/reconciler"
 
 	v1alpha1 "knative.dev/streaming/pkg/apis/streaming/v1alpha1"
+	streamingv1alpha1informers "knative.dev/streaming/pkg/client/informers/externalversions/streaming/v1alpha1"
 	streamprocessor "knative.dev/streaming/pkg/client/injection/reconciler/streaming/v1alpha1/streamprocessor"
 	"knative.dev/streaming/pkg/kafka"
 )
@@ -51,6 +53,7 @@ func newReconciledNormal(namespace, name string) reconciler.Event {
 type Reconciler struct {
 	svcInformer        corev1informers.ServiceInformer
 	deploymentInformer appsv1informers.DeploymentInformer
+	streamsInformer    streamingv1alpha1informers.StreamInformer
 	kubeClient         kubernetes.Interface
 }
 
@@ -58,20 +61,54 @@ type Reconciler struct {
 var _ streamprocessor.Interface = (*Reconciler)(nil)
 
 // ReconcileKind implements Interface.ReconcileKind.
-func (r *Reconciler) ReconcileKind(ctx context.Context, streamProcessor *v1alpha1.StreamProcessor) reconciler.Event {
-	streamProcessor.Status.InitializeConditions()
+func (r *Reconciler) ReconcileKind(ctx context.Context, sp *v1alpha1.StreamProcessor) reconciler.Event {
+	logger := logging.FromContext(ctx)
+	sp.Status.InitializeConditions()
 
-	patchStreamProcessor(streamProcessor)
+	// Check if all streams exists
+	for _, s := range sp.Spec.Input {
+		_, err := r.streamsInformer.Lister().Streams(sp.Namespace).Get(s.Name)
+		if err != nil && apierrs.IsNotFound(err) {
+			logger.Errorf("Stream %s not found", s.Name)
+			sp.Status.MarkStreamNotFound(s.Name)
+			return err
+		}
+	}
 
-	_, err := r.reconcileDeployment(ctx, createDeployment(streamProcessor))
+	if sp.Spec.Output != nil {
+		for _, s := range sp.Spec.Output {
+			_, err := r.streamsInformer.Lister().Streams(sp.Namespace).Get(s.Name)
+			if err != nil && apierrs.IsNotFound(err) {
+				logger.Errorf("Stream %s not found", s.Name)
+				sp.Status.MarkStreamNotFound(s.Name)
+				return err
+			}
+		}
+	}
+
+	if sp.Spec.State != nil {
+		_, err := r.streamsInformer.Lister().Streams(sp.Namespace).Get(sp.Spec.State.Name)
+		if err != nil && apierrs.IsNotFound(err) {
+			logger.Errorf("Stream %s not found", sp.Spec.State.Name)
+			sp.Status.MarkStreamNotFound(sp.Spec.State.Name)
+			return err
+		}
+	}
+
+	sp.Status.MarkStreamsReady()
+
+	patchStreamProcessor(sp)
+
+	_, err := r.reconcileDeployment(ctx, createDeployment(sp))
 	if err != nil {
+		sp.Status.MarkDeploymentFailed(deploymentName(sp), err)
 		return err
 	}
 
-	streamProcessor.Status.MarkReady()
+	sp.Status.MarkReady()
 
-	streamProcessor.Status.ObservedGeneration = streamProcessor.Generation
-	return newReconciledNormal(streamProcessor.Namespace, streamProcessor.Name)
+	sp.Status.ObservedGeneration = sp.Generation
+	return newReconciledNormal(sp.Namespace, sp.Name)
 }
 
 func (r *Reconciler) reconcileDeployment(ctx context.Context, expected *appsv1.Deployment) (*appsv1.Deployment, error) {
@@ -196,7 +233,8 @@ func createDeployment(streamProcessor *v1alpha1.StreamProcessor) *appsv1.Deploym
 
 	return &appsv1.Deployment{
 		ObjectMeta: metav1.ObjectMeta{
-			Name: name,
+			Name:      name,
+			Namespace: streamProcessor.Namespace,
 			OwnerReferences: []metav1.OwnerReference{
 				*kmeta.NewControllerRef(streamProcessor),
 			},
@@ -217,7 +255,6 @@ func createDeployment(streamProcessor *v1alpha1.StreamProcessor) *appsv1.Deploym
 						},
 						streamProcessor.Spec.Container,
 					},
-					RestartPolicy: corev1.RestartPolicyNever,
 					Volumes: []corev1.Volume{{
 						Name: "uds-data",
 						VolumeSource: corev1.VolumeSource{

@@ -19,11 +19,11 @@ package inbound
 import (
 	context "context"
 
+	kubeclient "knative.dev/pkg/client/injection/kube/client"
 	"knative.dev/pkg/client/injection/kube/informers/apps/v1/deployment"
 	"knative.dev/pkg/client/injection/kube/informers/core/v1/service"
 	configmap "knative.dev/pkg/configmap"
 	controller "knative.dev/pkg/controller"
-	"knative.dev/pkg/injection/clients/dynamicclient"
 	logging "knative.dev/pkg/logging"
 
 	inbound "knative.dev/streaming/pkg/client/injection/informers/streaming/v1alpha1/inbound"
@@ -40,18 +40,20 @@ func NewController(
 	inboundInformer := inbound.Get(ctx)
 	deploymentInformer := deployment.Get(ctx)
 	svcInformer := service.Get(ctx)
-	dynamicClient := dynamicclient.Get(ctx) // For creating kafka topics
+	kubeClient := kubeclient.Get(ctx)
 
-	// TODO: setup additional informers here.
-
-	r := &Reconciler{}
+	r := &Reconciler{
+		deploymentInformer: deploymentInformer,
+		svcInformer:        svcInformer,
+		kubeClient:         kubeClient,
+	}
 	impl := v1alpha1inbound.NewImpl(ctx, r)
 
 	logger.Info("Setting up event handlers.")
 
 	inboundInformer.Informer().AddEventHandler(controller.HandleAll(impl.Enqueue))
-
-	// TODO: add additional informer event handlers here.
+	svcInformer.Informer().AddEventHandler(controller.HandleAll(impl.EnqueueControllerOf))
+	deploymentInformer.Informer().AddEventHandler(controller.HandleAll(impl.EnqueueControllerOf))
 
 	return impl
 }

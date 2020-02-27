@@ -48,15 +48,15 @@ var _ kmeta.OwnerRefable = (*StreamProcessor)(nil)
 
 // StreamProcessorSpec holds the desired state of the StreamProcessor (from the client).
 type StreamProcessorSpec struct {
-	Container corev1.Container      `json:"container"`
-	Input     []ProcessorStreamSpec `json:"input"`
-	Output    []ProcessorStreamSpec `json:"input"`
+	Container corev1.Container `json:"container"`
 
+	Input  []StreamBindingSpec `json:"input"`
+	Output []StreamBindingSpec `json:"input"`
 	// +optional
-	State *ProcessorStreamSpec `json:"state,omitempty"`
+	State *StreamBindingSpec `json:"state,omitempty"`
 }
 
-type ProcessorStreamSpec struct {
+type StreamBindingSpec struct {
 	Name          string `json:"name"`
 	ParameterName string `json:"parameterName"`
 	Key           string `json:"key"`
@@ -71,10 +71,6 @@ const (
 // StreamProcessorStatus communicates the observed state of the StreamProcessor (from the controller).
 type StreamProcessorStatus struct {
 	duckv1.Status `json:",inline"`
-
-	// Address holds the information needed to connect this Addressable up to receive events.
-	// +optional
-	Address *duckv1.Addressable `json:"address,omitempty"`
 }
 
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object

@@ -32,13 +32,20 @@ func (ass *InboundStatus) InitializeConditions() {
 	inboundCondSet.Manage(ass).InitializeConditions()
 }
 
-func (ass *InboundStatus) MarkServiceUnavailable(name string) {
+func (ass *InboundStatus) MarkServiceFailed(name string, err error) {
 	inboundCondSet.Manage(ass).MarkFalse(
 		InboundConditionReady,
-		"ServiceUnavailable",
-		"Service %q wasn't found.", name)
+		"ServiceFailed",
+		"Service %q failed: %v", name, err)
 }
 
-func (ass *InboundStatus) MarkServiceAvailable() {
+func (ass *InboundStatus) MarkDeploymentFailed(name string, err error) {
+	inboundCondSet.Manage(ass).MarkFalse(
+		InboundConditionReady,
+		"DeploymentFailed",
+		"Deployment %q wasn't found: %v", name, err)
+}
+
+func (ass *InboundStatus) MarkReady() {
 	inboundCondSet.Manage(ass).MarkTrue(InboundConditionReady)
 }

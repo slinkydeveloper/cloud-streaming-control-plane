@@ -46,7 +46,7 @@ var _ apis.Validatable = (*Stream)(nil)
 var _ apis.Defaultable = (*Stream)(nil)
 var _ kmeta.OwnerRefable = (*Stream)(nil)
 
-// ProcessorStreamSpec holds the desired state of the Stream (from the client).
+// StreamBindingSpec holds the desired state of the Stream (from the client).
 type StreamSpec struct{}
 
 // StreamStatus communicates the observed state of the Stream (from the controller).

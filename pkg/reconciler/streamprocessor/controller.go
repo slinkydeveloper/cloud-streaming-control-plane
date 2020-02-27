@@ -39,17 +39,22 @@ func NewController(
 	logger := logging.FromContext(ctx)
 
 	streamprocessorInformer := streamprocessor.Get(ctx)
+	deploymentInformer := deployment.Get(ctx)
+	svcInformer := service.Get(ctx)
+	kubeClient := kubeclient.Get(ctx)
 
-	// TODO: setup additional informers here.
-
-	r := &Reconciler{}
+	r := &Reconciler{
+		deploymentInformer: deploymentInformer,
+		svcInformer:        svcInformer,
+		kubeClient:         kubeClient,
+	}
 	impl := v1alpha1streamprocessor.NewImpl(ctx, r)
 
 	logger.Info("Setting up event handlers.")
 
 	streamprocessorInformer.Informer().AddEventHandler(controller.HandleAll(impl.Enqueue))
-
-	// TODO: add additional informer event handlers here.
+	svcInformer.Informer().AddEventHandler(controller.HandleAll(impl.EnqueueControllerOf))
+	deploymentInformer.Informer().AddEventHandler(controller.HandleAll(impl.EnqueueControllerOf))
 
 	return impl
 }

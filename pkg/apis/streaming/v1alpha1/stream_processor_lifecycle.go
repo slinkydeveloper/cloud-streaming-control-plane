@@ -32,13 +32,13 @@ func (ass *StreamProcessorStatus) InitializeConditions() {
 	streamProcessorCondSet.Manage(ass).InitializeConditions()
 }
 
-func (ass *StreamProcessorStatus) MarkServiceUnavailable(name string) {
-	streamProcessorCondSet.Manage(ass).MarkFalse(
-		StreamProcessorConditionReady,
-		"ServiceUnavailable",
-		"Service %q wasn't found.", name)
+func (ass *StreamProcessorStatus) MarkDeploymentFailed(name string, err error) {
+	inboundCondSet.Manage(ass).MarkFalse(
+		InboundConditionReady,
+		"DeploymentFailed",
+		"Deployment %q wasn't found: %v", name, err)
 }
 
-func (ass *StreamProcessorStatus) MarkServiceAvailable() {
+func (ass *StreamProcessorStatus) MarkReady() {
 	streamProcessorCondSet.Manage(ass).MarkTrue(StreamProcessorConditionReady)
 }

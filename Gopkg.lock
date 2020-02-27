@@ -50,7 +50,7 @@
   version = "v1.26.1"
 
 [[projects]]
-  digest = "1:5365ada6c19c721c4b378633a9cba5f618863ad9fa79a0dcedc7547b879082dd"
+  digest = "1:ddf2ee9d216813e90359b6ac22bf68e8a1424d6314b34658de54b7e52d3ec7a7"
   name = "github.com/aws/aws-sdk-go"
   packages = [
     "aws",
@@ -90,8 +90,8 @@
     "service/sts/stsiface",
   ]
   pruneopts = "NUT"
-  revision = "c5fe337bb105ab1b79471a4f6d6ce1e1815bc17d"
-  version = "v1.29.10"
+  revision = "2ff90b519baf8ee626cf6c3d451d54664ac72345"
+  version = "v1.29.11"
 
 [[projects]]
   digest = "1:707ebe952a8b3d00b343c01536c79c73771d100f63ec6babeaed5c79e2b8a8dd"
@@ -192,7 +192,7 @@
   revision = "8c9f03a8e57eb486e42badaed3fb287da51807ba"
 
 [[projects]]
-  digest = "1:ae9e4332377e3406e543f2bb2643242aaa018956725da7eea7ef6ec58e35d69d"
+  digest = "1:378338d0e1870e621fa19683ea53f88f3ebaa7dd20329de37f46274a77115cde"
   name = "github.com/golang/protobuf"
   packages = [
     "descriptor",
@@ -208,8 +208,8 @@
     "ptypes/wrappers",
   ]
   pruneopts = "NUT"
-  revision = "d23c5127dc24889085f8ccea5c9d560a57a879d8"
-  version = "v1.3.3"
+  revision = "5d5b4c10bd43f85e63bd9e4a3fa9b1ea2ef88af2"
+  version = "v1.3.4"
 
 [[projects]]
   digest = "1:7f114b78210bf5b75f307fc97cff293633c835bab1e0ea8a744a44b39c042dfe"
@@ -699,7 +699,7 @@
     "internal/imports",
   ]
   pruneopts = "NUT"
-  revision = "807dcd883420cac3466af9424a593f57de8033eb"
+  revision = "204d844ad48d13a8a6db39aec90b837cce2e46d9"
 
 [[projects]]
   branch = "master"
@@ -713,12 +713,12 @@
   revision = "9bdfabe68543c54f90421aeb9a60ef8061b5b544"
 
 [[projects]]
-  digest = "1:8392b5c29adedc5f85c66b48bb53b6c49dd91d8540f3cad5d43ef7277946718f"
+  digest = "1:79c5b7c79609e7e2d0c5a6509cc5894bb8ee9c2ca6e741214f8aa4317beeea59"
   name = "gomodules.xyz/jsonpatch"
   packages = ["v2"]
   pruneopts = "NUT"
-  revision = "e8422f09d27ee2c8cfb2c7f8089eb9eeb0764849"
-  version = "v2.0.1"
+  revision = "1c2a0262323edc27502942d9727c95646b1c3cbe"
+  version = "v2.1.0"
 
 [[projects]]
   digest = "1:a397bc041d5817fd9ada5eb71ed952ab7eb6f8cc8f0981869232e7d1f0148020"
@@ -978,7 +978,7 @@
   version = "v0.17.3"
 
 [[projects]]
-  digest = "1:814703684a5e0baf4a4dc15fe892bfb266c57d66db5d6d89996cdec36efb2fc1"
+  digest = "1:90bae9a26d98f85900a8fd7ce76ea9bc429e90b279efbcdfd8814d92b39ccfe0"
   name = "k8s.io/apimachinery"
   packages = [
     "pkg/api/equality",
@@ -1018,6 +1018,7 @@
     "pkg/util/runtime",
     "pkg/util/sets",
     "pkg/util/strategicpatch",
+    "pkg/util/uuid",
     "pkg/util/validation",
     "pkg/util/validation/field",
     "pkg/util/wait",
@@ -1032,7 +1033,7 @@
   version = "kubernetes-1.16.4"
 
 [[projects]]
-  digest = "1:d5b26b8dfb8f6a0c8486b8d5957ae31b7605c3168e2e13b8ae5531c62eb3e98d"
+  digest = "1:bc47f1dc5e4413e331a87d5412955654148df35bbf83d7057d0c45c35a3a2e09"
   name = "k8s.io/client-go"
   packages = [
     "discovery",
@@ -1180,6 +1181,8 @@
     "tools/clientcmd/api",
     "tools/clientcmd/api/latest",
     "tools/clientcmd/api/v1",
+    "tools/leaderelection",
+    "tools/leaderelection/resourcelock",
     "tools/metrics",
     "tools/pager",
     "tools/record",
@@ -1274,7 +1277,7 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:eaef090130b5aab3603ae16288bd7f6a8c67b5e851d14f51ab9513d26dd10d73"
+  digest = "1:1829518da17f4803e337ca56334ef7c887a9677f28081f7176bf15e2d3bb64d1"
   name = "knative.dev/pkg"
   packages = [
     "apis",
@@ -1297,6 +1300,7 @@
     "injection/sharedmain",
     "kmeta",
     "kmp",
+    "leaderelection",
     "logging",
     "logging/logkey",
     "metrics",
@@ -1318,7 +1322,7 @@
     "webhook/resourcesemantics/validation",
   ]
   pruneopts = "T"
-  revision = "3925d38991d0e829664810d04a42c99c63eed4c4"
+  revision = "ca35cb8791d737c06c13fc4c972b18f08647f732"
 
 [[projects]]
   branch = "master"
@@ -1329,7 +1333,7 @@
     "tools/dep-collector",
   ]
   pruneopts = "UT"
-  revision = "01760e2303d6a17936658f155004da3019d0f43c"
+  revision = "b3fc723351c34f03515ee548a5c4ff021e7f544d"
 
 [[projects]]
   digest = "1:5fdf0517a870044f13def5f9f2dc75eb8cfb88baf7862eaf9884a06152f9391b"
